@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Webhook triggers - Allow external services to trigger workflows via HTTP requests
+- Webhook URL display in node settings panel with copy functionality
+- Optional webhook secret validation for security
+- Support for multiple HTTP methods (GET, POST, PUT, PATCH, DELETE) in webhook triggers
+
 ### Changed
 - Conditions now use `value1` and `value2` instead of `field` and `value` for flexible comparisons
 - Consistent dot notation throughout (removed mixed `{{ }}` syntax in conditions)
@@ -23,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - N+1 query issues in WorkflowTrigger and WorkflowRunner
 - API endpoints returning incorrect data (actions API returning conditions)
 - Direct action-to-action loops now properly detected and prevented
+- Nodes being deleted on each save - now properly recognizes existing nodes by UUID
 
 ---
 

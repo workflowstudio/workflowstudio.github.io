@@ -123,6 +123,93 @@ $comment->delete();
 ]
 ```
 
+## Webhook Triggers
+
+Webhook triggers allow external services to trigger workflows via HTTP requests.
+
+### Webhook
+
+Fires when an HTTP request is received at the webhook URL.
+
+**Type:** `webhook`
+
+**Settings:**
+```yaml
+method: POST
+secret: your-secret-token-here  # Optional, for validation
+```
+
+**Webhook URL:**
+Each webhook trigger gets a unique URL:
+```
+https://your-app.com/workflowstudio/webhooks/{node-id}
+```
+
+**How to get the Node ID:**
+1. Create a webhook trigger node in your workflow
+2. Click on the webhook trigger node to open its settings panel
+3. The webhook URL will be displayed in the settings panel (after saving the workflow)
+4. The Node ID is the UUID part of the URL (e.g., `abc-123-def-456` in `/webhooks/abc-123-def-456`)
+5. You can also find it by:
+   - Looking at the node ID in the browser's developer console
+   - Checking the workflow canvas data after saving
+   - The Node ID is automatically generated when you save the workflow
+
+**When it fires:**
+```bash
+# Using curl
+curl -X POST https://your-app.com/workflowstudio/webhooks/abc-123-def \
+  -H "Content-Type: application/json" \
+  -H "X-Webhook-Secret: your-secret-token-here" \
+  -d '{"event": "payment.completed", "amount": 100}'
+```
+
+**Context provided:**
+```php
+[
+    'trigger' => [
+        'type' => 'webhook',
+        'method' => 'POST',
+        'url' => 'https://your-app.com/workflowstudio/webhooks/abc-123-def',
+        'headers' => [
+            'content-type' => ['application/json'],
+            'x-webhook-secret' => ['your-secret-token-here'],
+        ],
+        'query' => [],
+        'body' => [
+            'event' => 'payment.completed',
+            'amount' => 100,
+        ],
+        'ip' => '192.168.1.1',
+        'user_agent' => 'curl/7.68.0',
+        'timestamp' => '2025-11-30T10:30:00Z',
+    ]
+]
+```
+
+**Security:**
+- Optional secret validation via `X-Webhook-Secret` header, query parameter, or body field
+- If secret is configured, requests without valid secret are rejected
+- If secret is empty, all requests are accepted
+
+**Supported HTTP Methods:**
+- GET
+- POST
+- PUT
+- PATCH
+- DELETE
+
+**Accessing Webhook Data:**
+```php
+// In conditions
+Value1: trigger.body.event
+Value2: payment.completed
+
+// In actions
+URL: {{ trigger.body.webhook_url }}
+Body: {{ trigger.body.data }}
+```
+
 ## Configuration
 
 Configure which models should be observed in `config/workflowstudio.php`:
@@ -221,6 +308,30 @@ Send VIP Email      Send Standard Email
     ↓                   ↓
 Webhook: Notify     Webhook: Notify
 Fulfillment         Standard Processing
+```
+
+### External Service Integration
+
+```
+Trigger: Webhook (Payment Service)
+    ↓
+Condition: trigger.body.status equals "completed"
+    ↓ TRUE
+Action: Update Order Status
+    ↓
+Action: Send Confirmation Email
+```
+
+### Third-Party Notifications
+
+```
+Trigger: Webhook (Stripe)
+    ↓
+Condition: trigger.body.type equals "payment_intent.succeeded"
+    ↓ TRUE
+Action: Update Subscription
+    ↓
+Action: Send Receipt
 ```
 
 ### Content Moderation
@@ -380,9 +491,10 @@ WorkflowTrigger::handle('created', $user);
 ## Limitations
 
 - One trigger per workflow
-- Only Eloquent models supported
+- Model triggers: Only Eloquent models supported
 - Requires queue worker running
 - No retroactive triggers (won't process existing data)
+- Webhook triggers: Publicly accessible (use secret for security)
 
 ## Next Steps
 
