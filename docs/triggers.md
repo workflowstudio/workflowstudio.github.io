@@ -210,6 +210,90 @@ URL: {{ trigger.body.webhook_url }}
 Body: {{ trigger.body.data }}
 ```
 
+## Scheduled Triggers
+
+Scheduled triggers allow workflows to run automatically on a schedule using cron expressions or predefined intervals.
+
+### Scheduled
+
+Fires on a schedule based on cron expression or predefined intervals.
+
+**Type:** `scheduled`
+
+**Settings:**
+```yaml
+schedule_type: daily  # cron, daily, weekly, monthly, hourly, every_minute, etc.
+time: 09:00          # Time in 24-hour format (for daily, weekly, monthly)
+cron_expression: "0 9 * * *"  # Custom cron expression (when schedule_type is "cron")
+day_of_week: 1       # Day of week for weekly (0=Sunday, 6=Saturday)
+day_of_month: 1      # Day of month for monthly (1-31)
+```
+
+**Schedule Types:**
+- `cron` - Custom cron expression
+- `daily` - Runs once per day at specified time
+- `weekly` - Runs once per week on specified day and time
+- `monthly` - Runs once per month on specified day and time
+- `hourly` - Runs every hour at minute 0
+- `every_minute` - Runs every minute
+- `every_five_minutes` - Runs every 5 minutes
+- `every_ten_minutes` - Runs every 10 minutes
+- `every_fifteen_minutes` - Runs every 15 minutes
+- `every_thirty_minutes` - Runs every 30 minutes
+
+**When it fires:**
+```php
+// Daily at 9:00 AM
+schedule_type: daily
+time: 09:00
+
+// Weekly on Monday at 9:00 AM
+schedule_type: weekly
+time: 09:00
+day_of_week: 1
+
+// Monthly on the 1st at 9:00 AM
+schedule_type: monthly
+time: 09:00
+day_of_month: 1
+
+// Custom cron: Every weekday at 9 AM
+schedule_type: cron
+cron_expression: "0 9 * * 1-5"
+```
+
+**Context provided:**
+```php
+[
+    'trigger' => [
+        'type' => 'scheduled',
+        'schedule_type' => 'daily',
+        'cron_expression' => '0 9 * * *',
+        'triggered_at' => '2025-11-30T09:00:00Z',
+    ]
+]
+```
+
+**Setup Required:**
+The scheduled command is automatically registered by the package. You only need to ensure Laravel's scheduler is running:
+
+```bash
+# Add to crontab
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+The command `workflowstudio:run-scheduled` will automatically run every minute to check for due scheduled workflows.
+
+**Accessing Scheduled Data:**
+```php
+// In conditions
+Value1: trigger.schedule_type
+Value2: daily
+
+// In actions
+Message: Workflow triggered at {{ trigger.triggered_at }}
+```
+
 ## Configuration
 
 Configure which models should be observed in `config/workflowstudio.php`:
@@ -332,6 +416,38 @@ Condition: trigger.body.type equals "payment_intent.succeeded"
 Action: Update Subscription
     ↓
 Action: Send Receipt
+```
+
+### Daily Reports
+
+```
+Trigger: Scheduled (Daily at 9 AM)
+    ↓
+Action: Generate Report
+    ↓
+Action: Send Email with Report
+```
+
+### Weekly Cleanup
+
+```
+Trigger: Scheduled (Weekly on Sunday)
+    ↓
+Action: Clean Old Records
+    ↓
+Action: Archive Data
+    ↓
+Action: Send Summary Email
+```
+
+### Hourly Monitoring
+
+```
+Trigger: Scheduled (Every Hour)
+    ↓
+Condition: System Health Check
+    ↓ TRUE              ↓ FALSE
+Send OK Status      Send Alert
 ```
 
 ### Content Moderation

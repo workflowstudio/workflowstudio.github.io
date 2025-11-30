@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Webhook URL display in node settings panel with copy functionality
 - Optional webhook secret validation for security
 - Support for multiple HTTP methods (GET, POST, PUT, PATCH, DELETE) in webhook triggers
+- Scheduled triggers - Automatically trigger workflows on a schedule using cron expressions or predefined intervals
 
 ### Changed
 - Conditions now use `value1` and `value2` instead of `field` and `value` for flexible comparisons
@@ -30,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API endpoints returning incorrect data (actions API returning conditions)
 - Direct action-to-action loops now properly detected and prevented
 - Nodes being deleted on each save - now properly recognizes existing nodes by UUID
+- Schema validation not working for required fields with dynamic variables
+
+### Removed
+- Default value feature - removed to prevent field editing conflicts. All fields now start empty and users must explicitly set values.
 
 ---
 
