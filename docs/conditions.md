@@ -14,8 +14,8 @@ Checks if two values are equal (case-sensitive string comparison).
 
 **Settings:**
 ```yaml
-field: trigger.model_data.status
-value: active
+value1: trigger.model_data.status
+value2: active
 ```
 
 **Returns:**
@@ -24,16 +24,21 @@ value: active
 
 **Examples:**
 ```yaml
-field: trigger.model_data.role
-value: admin
+# Check user role
+value1: trigger.model_data.role
+value2: admin
 
 # Check status
-field: trigger.model_data.is_active
-value: 1
+value1: trigger.model_data.is_active
+value2: 1
 
 # Check previous action result
-field: previous.success
-value: true
+value1: previous.success
+value2: true
+
+# Compare two dynamic values
+value1: previous.amount
+value2: trigger.model_data.threshold
 ```
 
 ### Contains
@@ -44,27 +49,31 @@ Checks if a string contains a substring (case-sensitive).
 
 **Settings:**
 ```yaml
-field: trigger.model_data.email
-value: @company.com
+value1: trigger.model_data.email
+value2: @company.com
 ```
 
 **Returns:**
-- `true` if the field contains the value
+- `true` if value1 contains value2
 - `false` if not found
 
 **Examples:**
 ```yaml
 # Email domain check
-field: trigger.model_data.email
-value: @company.com
+value1: trigger.model_data.email
+value2: @company.com
 
 # Text content check
-field: trigger.model_data.bio
-value: developer
+value1: trigger.model_data.bio
+value2: developer
 
 # Tag check
-field: trigger.model_data.tags
-value: premium
+value1: trigger.model_data.tags
+value2: premium
+
+# Check if previous result contains text
+value1: previous.message
+value2: success
 ```
 
 ### Greater Than
@@ -75,27 +84,27 @@ Numeric comparison (>).
 
 **Settings:**
 ```yaml
-field: trigger.model_data.age
-value: 18
+value1: trigger.model_data.age
+value2: 18
 ```
 
 **Returns:**
-- `true` if field > value
+- `true` if value1 > value2
 - `false` otherwise
 
 **Examples:**
 ```yaml
 # Age verification
-field: trigger.model_data.age
-value: 18
+value1: trigger.model_data.age
+value2: 18
 
 # Price check
-field: trigger.model_data.price
-value: 100
+value1: trigger.model_data.price
+value2: 100
 
-# Quantity check
-field: trigger.model_data.quantity
-value: 0
+# Compare previous amount with threshold
+value1: previous.amount
+value2: trigger.model_data.threshold
 ```
 
 ### Less Than
@@ -106,27 +115,27 @@ Numeric comparison (<).
 
 **Settings:**
 ```yaml
-field: trigger.model_data.price
-value: 100
+value1: trigger.model_data.price
+value2: 100
 ```
 
 **Returns:**
-- `true` if field < value
+- `true` if value1 < value2
 - `false` otherwise
 
 **Examples:**
 ```yaml
 # Low stock alert
-field: trigger.model_data.stock
-value: 10
+value1: trigger.model_data.stock
+value2: 10
 
 # Budget check
-field: trigger.model_data.amount
-value: 1000
+value1: trigger.model_data.amount
+value2: 1000
 
-# Rating filter
-field: trigger.model_data.rating
-value: 3
+# Compare previous count with limit
+value1: previous.count
+value2: trigger.model_data.limit
 ```
 
 ## Using Context Variables
@@ -135,23 +144,38 @@ Conditions can access any context variable:
 
 ### From Trigger
 ```yaml
-field: trigger.model_data.status
-field: trigger.model_id
-field: trigger.event
+value1: trigger.model_data.status
+value2: active
+
+value1: trigger.model_id
+value2: 123
+
+value1: trigger.event
+value2: created
 ```
 
 ### From Previous Nodes
 ```yaml
-field: previous.success
-field: previous.status
-field: node.123.result
+value1: previous.success
+value2: true
+
+value1: previous.status
+value2: completed
+
+value1: previous.amount
+value2: trigger.model_data.threshold
 ```
 
 ### Nested Access
 ```yaml
-field: trigger.model_data.profile.verified
-field: trigger.model_data.settings.notifications
-field: previous.response.data.success
+value1: trigger.model_data.profile.verified
+value2: true
+
+value1: trigger.model_data.settings.notifications
+value2: enabled
+
+value1: previous.response.data.success
+value2: true
 ```
 
 ## Branching
@@ -242,46 +266,50 @@ Condition B (Verified = true)
     ↓ TRUE → Grant Access
 ```
 
-## Field Resolution
+## Value Resolution
 
-Fields are resolved from context at runtime:
+Values are resolved from context at runtime using dot notation:
 
 ```yaml
-# Static field path
-field: trigger.model_data.status
+# Dot notation path
+value1: trigger.model_data.status
 
 # Resolves to:
 $context['trigger']['model_data']['status']
 ```
 
 **Resolution Process:**
-1. Split field by dots: `['trigger', 'model_data', 'status']`
-2. Navigate context: `$context['trigger']['model_data']['status']`
-3. Return value or null
+1. Check if value starts with `trigger.`, `previous.`, or `node.`
+2. If yes, split by dots and navigate context
+3. If no, treat as plain value (string, number, etc.)
+4. Return resolved value or null if path not found
 
 ## Value Types
 
-### Strings
+Both `value1` and `value2` support:
+
+### Plain Values
 ```yaml
-value: active
-value: "@company.com"
-value: "true"  # String, not boolean
+value1: active
+value2: active
+
+value1: 18
+value2: 20
+
+value1: true
+value2: true
 ```
 
-### Numbers
+### Dot Notation Paths
 ```yaml
-value: 18
-value: 100.50
-value: 0
+value1: trigger.model_data.status
+value2: previous.status
+
+value1: previous.amount
+value2: trigger.model_data.threshold
 ```
 
-### Booleans
-```yaml
-value: true
-value: false
-```
-
-**Note:** Equals condition performs string comparison, so `true` is compared as string `"true"`.
+**Note:** Equals condition performs loose comparison (`==`), so types are converted as needed.
 
 ## Debugging Conditions
 
@@ -310,8 +338,8 @@ use WorkflowStudio\Services\ConditionEvaluator;
 $evaluator = app(ConditionEvaluator::class);
 
 $result = $evaluator->evaluate('equals', [
-    'field' => 'trigger.model_data.status',
-    'value' => 'active'
+    'value1' => 'trigger.model_data.status',
+    'value2' => 'active'
 ], [
     'trigger' => [
         'model_data' => ['status' => 'active']
@@ -326,36 +354,43 @@ $result = $evaluator->evaluate('equals', [
 ### Email Domain Check
 ```yaml
 Condition: Contains
-field: trigger.model_data.email
-value: @company.com
+value1: trigger.model_data.email
+value2: @company.com
 ```
 
 ### Age Verification
 ```yaml
 Condition: Greater Than
-field: trigger.model_data.age
-value: 18
+value1: trigger.model_data.age
+value2: 18
 ```
 
 ### Status Check
 ```yaml
 Condition: Equals
-field: trigger.model_data.status
-value: active
+value1: trigger.model_data.status
+value2: active
 ```
 
 ### Action Result Check
 ```yaml
 Condition: Equals
-field: previous.success
-value: true
+value1: previous.success
+value2: true
+```
+
+### Compare Two Dynamic Values
+```yaml
+Condition: Greater Than
+value1: previous.amount
+value2: trigger.model_data.threshold
 ```
 
 ### Low Stock Alert
 ```yaml
 Condition: Less Than
-field: trigger.model_data.stock
-value: 10
+value1: trigger.model_data.stock
+value2: 10
 ```
 
 ## Best Practices
@@ -364,21 +399,22 @@ value: 10
 
 ```yaml
 ✅ Good
-field: trigger.model_data.subscription_status
-value: active
+value1: trigger.model_data.subscription_status
+value2: active
 
 ❌ Bad
-field: trigger.model_data.s
-value: 1
+value1: trigger.model_data.s
+value2: 1
 ```
 
 ### 2. Handle Missing Fields
 
-Conditions return `false` if field doesn't exist:
+Conditions return `false` if a path doesn't exist:
 
 ```yaml
-field: trigger.model_data.optional_field
-# Returns false if field doesn't exist
+value1: trigger.model_data.optional_field
+value2: expected_value
+# Returns false if optional_field doesn't exist
 ```
 
 ### 3. Label Branches Clearly
@@ -397,14 +433,12 @@ Test with:
 
 ```yaml
 ✅ Use Contains for substring matching
-field: trigger.model_data.email
-Condition: Contains
-value: @company.com
+value1: trigger.model_data.email
+value2: @company.com
 
 ❌ Don't use Equals for substring
-field: trigger.model_data.email
-Condition: Equals
-value: @company.com  # Won't match full email
+value1: trigger.model_data.email
+value2: @company.com  # Won't match full email
 ```
 
 ## Creating Custom Conditions
@@ -425,10 +459,10 @@ class IsWeekdayCondition extends AbstractCondition
 
 ## Limitations
 
-- No complex expressions (e.g., `field1 AND field2`)
-- No mathematical operations (e.g., `field + 10`)
+- No complex expressions (e.g., `value1 AND value2`)
+- No mathematical operations (e.g., `value1 + 10`)
 - Case-sensitive comparisons
-- String-based equals comparison
+- Loose comparison for equals (uses `==`)
 
 For complex logic, chain multiple conditions or create custom conditions.
 

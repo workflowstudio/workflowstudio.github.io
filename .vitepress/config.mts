@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { versions } from './utils/versions'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -26,7 +27,7 @@ export default defineConfig({
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'WorkflowStudio - Visual Workflow Automation for Laravel' }],
     ['meta', { property: 'og:description', content: 'Build powerful, visual workflows for Laravel with an intuitive drag-and-drop canvas editor. Automate complex business processes without writing code.' }],
-    ['meta', { property: 'og:image', content: '/og-image.png' }],
+    ['meta', { property: 'og:image', content: 'https://workflowstudio.github.io/example.png' }],
     ['meta', { property: 'og:url', content: 'https://workflowstudio.github.io' }],
     ['meta', { property: 'og:site_name', content: 'WorkflowStudio' }],
     
@@ -34,7 +35,7 @@ export default defineConfig({
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:title', content: 'WorkflowStudio - Visual Workflow Automation for Laravel' }],
     ['meta', { name: 'twitter:description', content: 'Build powerful, visual workflows for Laravel with an intuitive drag-and-drop canvas editor.' }],
-    ['meta', { name: 'twitter:image', content: '/og-image.png' }],
+    ['meta', { name: 'twitter:image', content: 'https://workflowstudio.github.io/example.png' }],
     
     // Additional SEO
     ['meta', { name: 'application-name', content: 'WorkflowStudio' }],
@@ -51,11 +52,6 @@ export default defineConfig({
     
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Documentation', link: '/getting-started' },
-      { text: 'Support', link: 'mailto:xentixar@gmail.com' },
-    ],
-
-    sidebar: [
       {
         text: 'Documentation',
         items: [
@@ -65,6 +61,46 @@ export default defineConfig({
           { text: 'Conditions', link: '/conditions' },
           { text: 'Context Variables', link: '/context-variables' },
           { text: 'Custom Nodes', link: '/custom-nodes' },
+          { text: 'Changelog', link: '/changelog' },
+        ],
+      },
+      {
+        text: `v${versions.find(v => v.status === 'current')?.version || '1.0'}`,
+        items: versions.map(version => ({
+          text: version.label,
+          link: version.path === '/' ? '/getting-started' : `${version.path}/getting-started`,
+          activeMatch: version.path === '/' ? '^/$|^/(?!v)' : `^${version.path}`,
+        })),
+      },
+      { text: 'Support', link: 'mailto:xentixar@gmail.com' },
+    ],
+
+    sidebar: [
+      {
+        text: 'Getting Started',
+        items: [
+          { text: 'Introduction', link: '/getting-started' },
+        ],
+      },
+      {
+        text: 'Core Concepts',
+        items: [
+          { text: 'Triggers', link: '/triggers' },
+          { text: 'Actions', link: '/actions' },
+          { text: 'Conditions', link: '/conditions' },
+        ],
+      },
+      {
+        text: 'Advanced',
+        items: [
+          { text: 'Context Variables', link: '/context-variables' },
+          { text: 'Custom Nodes', link: '/custom-nodes' },
+        ],
+      },
+      {
+        text: 'Reference',
+        items: [
+          { text: 'Changelog', link: '/changelog' },
         ],
       },
     ],
@@ -80,10 +116,6 @@ export default defineConfig({
 
     search: {
       provider: 'local',
-    },
-
-    editLink: {
-      pattern: undefined,
     },
   },
 })

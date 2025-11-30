@@ -68,7 +68,7 @@ Access data from the workflow trigger:
 
 ## Accessing Node Output
 
-Access data from a specific node by its ID:
+Access data from a specific node by its ID (use `previous` instead when possible):
 
 ```
 {{ node.45.success }}         // true
@@ -77,6 +77,8 @@ Access data from a specific node by its ID:
 {{ node.46.status }}          // 200
 {{ node.46.json.success }}    // true
 ```
+
+**Note:** Prefer using `previous` for sequential workflows. Use `node.{id}` only when you need to reference a specific non-sequential node.
 
 **Finding Node IDs:**
 - Hover over a node in the canvas to see its ID in the tooltip
