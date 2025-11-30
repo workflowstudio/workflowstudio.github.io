@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Conditions now use `value1` and `value2` instead of `field` and `value` for flexible comparisons
-- Consistent dot notation throughout (removed mixed `{{ }}` syntax in conditions)
+- Consistent dot notation throughout (removed mixed <code>&#123;&#123; &#125;&#125;</code> syntax in conditions)
 - Optimized database queries with eager loading to prevent N+1 issues
 - Refactored registry classes to use AbstractRegistry base class
 - Improved code clarity and structure across the codebase
@@ -47,8 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nodes being deleted on each save - now properly recognizes existing nodes by UUID
 - Schema validation not working for required fields with dynamic variables
 - Validation errors for optional fields when not provided (e.g., "from" field in Send Email action)
-- Email validation errors when using dynamic variables like `{{ trigger.model_data.email }}`
-- Fields with dynamic variables (`{{ }}`) now skip all validation at save time (validated at runtime instead)
+- Email validation errors when using dynamic variables like <code>&#123;&#123; trigger.model_data.email &#125;&#125;</code>
+- Fields with dynamic variables (<code>&#123;&#123; &#125;&#125;</code>) now skip all validation at save time (validated at runtime instead)
 
 ### Removed
 - Default value feature - removed to prevent field editing conflicts. All fields now start empty and users must explicitly set values.
