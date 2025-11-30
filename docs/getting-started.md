@@ -159,7 +159,14 @@ Navigate to `http://your-app.test/workflowstudio/workflows` in your browser.
 ### Step 5: Save and Test
 
 1. Click the "Save Workflow" button
-2. Create a test user to trigger the workflow:
+2. **Test Manually** (Recommended for testing):
+   - Click the **Execute** button in the toolbar
+   - For model triggers, a modal will appear with test data fields
+   - Enter test values (e.g., name: `John`, email: `john@example.com`)
+   - Click "Execute Workflow"
+   - Watch the execution status update in real-time
+   - Check the execution history panel to see results
+3. **Or trigger with real data**:
    ```php
    User::create([
        'name' => 'John',
@@ -168,7 +175,7 @@ Navigate to `http://your-app.test/workflowstudio/workflows` in your browser.
    ]);
    ```
 
-3. Check your queue logs to see the workflow execution
+4. Check your queue logs to see the workflow execution
 
 ## Next Steps
 

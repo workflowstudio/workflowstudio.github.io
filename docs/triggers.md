@@ -597,11 +597,47 @@ Log::info('Workflow triggered', [
 
 ### Test Manually
 
+#### Using the UI (Recommended)
+
+1. Open your workflow in the editor
+2. Click the **Execute** button in the toolbar
+3. For model triggers, a modal will appear asking for test data:
+   - The modal automatically loads fillable fields from your selected model
+   - Enter test values (e.g., email: `test@example.com`, name: `Test User`)
+   - Click "Execute Workflow"
+4. For other trigger types (scheduled, webhook), execution starts immediately
+5. Watch the execution status update in real-time
+
+**Example Test Data for User Model:**
+```
+id: 1
+name: Test User
+email: test@example.com
+```
+
+#### Using Code
+
 ```php
 use WorkflowStudio\Services\WorkflowTrigger;
 
 $user = User::find(1);
 WorkflowTrigger::handle('created', $user);
+```
+
+#### Using API
+
+```bash
+# Execute workflow manually via API
+curl -X POST https://your-app.com/workflowstudio/api/workflows/{workflow-id}/execute \
+  -H "Content-Type: application/json" \
+  -H "X-CSRF-TOKEN: your-token" \
+  -d '{
+    "test_data": {
+      "id": 1,
+      "name": "Test User",
+      "email": "test@example.com"
+    }
+  }'
 ```
 
 ## Limitations

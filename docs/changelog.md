@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Manual workflow execution - Test workflows directly from the editor with a single click
+- Execute button in workflow editor toolbar for quick testing
+- Test data input modal for model triggers - Enter test data (email, name, etc.) when manually executing workflows with model triggers
+- Automatic execution status polling to show real-time progress
+- Support for manual execution of all trigger types (model events, scheduled, webhook)
+- Default test data generation for model triggers to prevent validation errors
+- Dynamic model field detection - Test data modal automatically fetches fillable fields from selected model
 - Webhook triggers - Allow external services to trigger workflows via HTTP requests
 - Webhook URL display in node settings panel with copy functionality
 - Optional webhook secret validation for security
@@ -32,6 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Direct action-to-action loops now properly detected and prevented
 - Nodes being deleted on each save - now properly recognizes existing nodes by UUID
 - Schema validation not working for required fields with dynamic variables
+- Validation errors for optional fields when not provided (e.g., "from" field in Send Email action)
+- Email validation errors when using dynamic variables like `{{ trigger.model_data.email }}`
+- Fields with dynamic variables (`{{ }}`) now skip all validation at save time (validated at runtime instead)
 
 ### Removed
 - Default value feature - removed to prevent field editing conflicts. All fields now start empty and users must explicitly set values.
