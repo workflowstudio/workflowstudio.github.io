@@ -37,6 +37,10 @@ features:
   - icon: 🔧
     title: Fully Extensible
     details: Create custom triggers, actions, and conditions. Build exactly what you need and integrate with any service or API.
+  
+  - icon: 🧪
+    title: Manual Testing
+    details: Test workflows directly from the editor with a single click. Enter test data for model triggers and watch executions in real-time.
 ---
 
 ## Why WorkflowStudio?
@@ -72,6 +76,9 @@ Built for Laravel with queue support, error handling, and comprehensive logging.
 
 #### 📊 Execution Tracking
 Monitor workflow executions in real-time. View execution history, debug failures, and track performance metrics.
+
+#### 🧪 Built-in Testing
+Test workflows instantly without creating test data. The manual execution feature lets you test any workflow with custom test data right from the editor.
 
 </div>
 

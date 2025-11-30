@@ -123,6 +123,177 @@ $comment->delete();
 ]
 ```
 
+## Webhook Triggers
+
+Webhook triggers allow external services to trigger workflows via HTTP requests.
+
+### Webhook
+
+Fires when an HTTP request is received at the webhook URL.
+
+**Type:** `webhook`
+
+**Settings:**
+```yaml
+method: POST
+secret: your-secret-token-here  # Optional, for validation
+```
+
+**Webhook URL:**
+Each webhook trigger gets a unique URL:
+```
+https://your-app.com/workflowstudio/webhooks/{node-id}
+```
+
+**How to get the Node ID:**
+1. Create a webhook trigger node in your workflow
+2. Click on the webhook trigger node to open its settings panel
+3. The webhook URL will be displayed in the settings panel (after saving the workflow)
+4. The Node ID is the UUID part of the URL (e.g., `abc-123-def-456` in `/webhooks/abc-123-def-456`)
+5. You can also find it by:
+   - Looking at the node ID in the browser's developer console
+   - Checking the workflow canvas data after saving
+   - The Node ID is automatically generated when you save the workflow
+
+**When it fires:**
+```bash
+# Using curl
+curl -X POST https://your-app.com/workflowstudio/webhooks/abc-123-def \
+  -H "Content-Type: application/json" \
+  -H "X-Webhook-Secret: your-secret-token-here" \
+  -d '{"event": "payment.completed", "amount": 100}'
+```
+
+**Context provided:**
+```php
+[
+    'trigger' => [
+        'type' => 'webhook',
+        'method' => 'POST',
+        'url' => 'https://your-app.com/workflowstudio/webhooks/abc-123-def',
+        'headers' => [
+            'content-type' => ['application/json'],
+            'x-webhook-secret' => ['your-secret-token-here'],
+        ],
+        'query' => [],
+        'body' => [
+            'event' => 'payment.completed',
+            'amount' => 100,
+        ],
+        'ip' => '192.168.1.1',
+        'user_agent' => 'curl/7.68.0',
+        'timestamp' => '2025-11-30T10:30:00Z',
+    ]
+]
+```
+
+**Security:**
+- Optional secret validation via `X-Webhook-Secret` header, query parameter, or body field
+- If secret is configured, requests without valid secret are rejected
+- If secret is empty, all requests are accepted
+
+**Supported HTTP Methods:**
+- GET
+- POST
+- PUT
+- PATCH
+- DELETE
+
+**Accessing Webhook Data:**
+```php
+// In conditions
+Value1: trigger.body.event
+Value2: payment.completed
+
+// In actions
+URL: {{ trigger.body.webhook_url }}
+Body: {{ trigger.body.data }}
+```
+
+## Scheduled Triggers
+
+Scheduled triggers allow workflows to run automatically on a schedule using cron expressions or predefined intervals.
+
+### Scheduled
+
+Fires on a schedule based on cron expression or predefined intervals.
+
+**Type:** `scheduled`
+
+**Settings:**
+```yaml
+schedule_type: daily  # cron, daily, weekly, monthly, hourly, every_minute, etc.
+time: 09:00          # Time in 24-hour format (for daily, weekly, monthly)
+cron_expression: "0 9 * * *"  # Custom cron expression (when schedule_type is "cron")
+day_of_week: 1       # Day of week for weekly (0=Sunday, 6=Saturday)
+day_of_month: 1      # Day of month for monthly (1-31)
+```
+
+**Schedule Types:**
+- `cron` - Custom cron expression
+- `daily` - Runs once per day at specified time
+- `weekly` - Runs once per week on specified day and time
+- `monthly` - Runs once per month on specified day and time
+- `hourly` - Runs every hour at minute 0
+- `every_minute` - Runs every minute
+- `every_five_minutes` - Runs every 5 minutes
+- `every_ten_minutes` - Runs every 10 minutes
+- `every_fifteen_minutes` - Runs every 15 minutes
+- `every_thirty_minutes` - Runs every 30 minutes
+
+**When it fires:**
+```php
+// Daily at 9:00 AM
+schedule_type: daily
+time: 09:00
+
+// Weekly on Monday at 9:00 AM
+schedule_type: weekly
+time: 09:00
+day_of_week: 1
+
+// Monthly on the 1st at 9:00 AM
+schedule_type: monthly
+time: 09:00
+day_of_month: 1
+
+// Custom cron: Every weekday at 9 AM
+schedule_type: cron
+cron_expression: "0 9 * * 1-5"
+```
+
+**Context provided:**
+```php
+[
+    'trigger' => [
+        'type' => 'scheduled',
+        'schedule_type' => 'daily',
+        'cron_expression' => '0 9 * * *',
+        'triggered_at' => '2025-11-30T09:00:00Z',
+    ]
+]
+```
+
+**Setup Required:**
+The scheduled command is automatically registered by the package. You only need to ensure Laravel's scheduler is running:
+
+```bash
+# Add to crontab
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+The command `workflowstudio:run-scheduled` will automatically run every minute to check for due scheduled workflows.
+
+**Accessing Scheduled Data:**
+```php
+// In conditions
+Value1: trigger.schedule_type
+Value2: daily
+
+// In actions
+Message: Workflow triggered at {{ trigger.triggered_at }}
+```
+
 ## Configuration
 
 Configure which models should be observed in `config/workflowstudio.php`:
@@ -221,6 +392,62 @@ Send VIP Email      Send Standard Email
     ↓                   ↓
 Webhook: Notify     Webhook: Notify
 Fulfillment         Standard Processing
+```
+
+### External Service Integration
+
+```
+Trigger: Webhook (Payment Service)
+    ↓
+Condition: trigger.body.status equals "completed"
+    ↓ TRUE
+Action: Update Order Status
+    ↓
+Action: Send Confirmation Email
+```
+
+### Third-Party Notifications
+
+```
+Trigger: Webhook (Stripe)
+    ↓
+Condition: trigger.body.type equals "payment_intent.succeeded"
+    ↓ TRUE
+Action: Update Subscription
+    ↓
+Action: Send Receipt
+```
+
+### Daily Reports
+
+```
+Trigger: Scheduled (Daily at 9 AM)
+    ↓
+Action: Generate Report
+    ↓
+Action: Send Email with Report
+```
+
+### Weekly Cleanup
+
+```
+Trigger: Scheduled (Weekly on Sunday)
+    ↓
+Action: Clean Old Records
+    ↓
+Action: Archive Data
+    ↓
+Action: Send Summary Email
+```
+
+### Hourly Monitoring
+
+```
+Trigger: Scheduled (Every Hour)
+    ↓
+Condition: System Health Check
+    ↓ TRUE              ↓ FALSE
+Send OK Status      Send Alert
 ```
 
 ### Content Moderation
@@ -370,6 +597,26 @@ Log::info('Workflow triggered', [
 
 ### Test Manually
 
+#### Using the UI (Recommended)
+
+1. Open your workflow in the editor
+2. Click the **Execute** button in the toolbar
+3. For model triggers, a modal will appear asking for test data:
+   - The modal automatically loads fillable fields from your selected model
+   - Enter test values (e.g., email: `test@example.com`, name: `Test User`)
+   - Click "Execute Workflow"
+4. For other trigger types (scheduled, webhook), execution starts immediately
+5. Watch the execution status update in real-time
+
+**Example Test Data for User Model:**
+```
+id: 1
+name: Test User
+email: test@example.com
+```
+
+#### Using Code
+
 ```php
 use WorkflowStudio\Services\WorkflowTrigger;
 
@@ -377,12 +624,29 @@ $user = User::find(1);
 WorkflowTrigger::handle('created', $user);
 ```
 
+#### Using API
+
+```bash
+# Execute workflow manually via API
+curl -X POST https://your-app.com/workflowstudio/api/workflows/{workflow-id}/execute \
+  -H "Content-Type: application/json" \
+  -H "X-CSRF-TOKEN: your-token" \
+  -d '{
+    "test_data": {
+      "id": 1,
+      "name": "Test User",
+      "email": "test@example.com"
+    }
+  }'
+```
+
 ## Limitations
 
 - One trigger per workflow
-- Only Eloquent models supported
+- Model triggers: Only Eloquent models supported
 - Requires queue worker running
 - No retroactive triggers (won't process existing data)
+- Webhook triggers: Publicly accessible (use secret for security)
 
 ## Next Steps
 
