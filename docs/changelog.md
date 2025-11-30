@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- (Future features will be listed here)
+
+---
+
+## [1.1.0] - 2025-11-30
+
+### Added
 - Manual workflow execution - Test workflows directly from the editor with a single click
 - Execute button in workflow editor toolbar for quick testing
 - Test data input modal for model triggers - Enter test data (email, name, etc.) when manually executing workflows with model triggers
