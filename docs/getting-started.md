@@ -9,36 +9,105 @@ This guide will help you create your first workflow using WorkflowStudio.
 - Laravel 11.x or higher
 - PHP 8.2 or higher
 - Node.js 18+ (for asset compilation)
+- A valid WorkflowStudio license
+
+## Distribution
+
+WorkflowStudio is distributed as a **PHP package** via a private Composer registry. The package uses **Composer** as the updater.
+
+### Requirements
+
+In order to install WorkflowStudio, you must have:
+- A valid `composer.json` file in your project root
+- A valid WorkflowStudio license key
+- The email address associated with your license
 
 ## Installation
 
-1. **Install the package:**
-   ```bash
-   composer require workflowstudio/workflowstudio
-   ```
+### Step 1: Add Private Composer Registry
 
-2. **Publish configuration and assets:**
-   ```bash
-   php artisan vendor:publish --provider="WorkflowStudio\WorkflowStudioServiceProvider"
-   ```
+WorkflowStudio is distributed through a private Composer registry. Add the repository to your `composer.json`:
 
-3. **Run migrations:**
-   ```bash
-   php artisan migrate
-   ```
+```json
+{
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://workflowstudio.composer.sh"
+    }
+  ]
+}
+```
 
-4. **Configure observed models** in `config/workflowstudio.php`:
-   ```php
-   'observed_models' => [
-       \App\Models\User::class,
-       \App\Models\Post::class,
-   ],
-   ```
+### Step 2: Install the Package
 
-5. **Start queue worker:**
-   ```bash
-   php artisan queue:work
-   ```
+Install WorkflowStudio using Composer:
+
+```bash
+composer require workflowstudio/workflowstudio
+```
+
+### Step 3: Authenticate
+
+When prompted for authentication, enter your license credentials:
+
+```
+Loading composer repositories with package information
+Authentication required (workflowstudio.composer.sh):
+Username: [your-email@example.com]
+Password: [your-license-key]
+```
+
+**Authentication Details:**
+- **Username**: Your email address (the one associated with your license)
+  - If your license is not assigned to a licensee, you can enter `unlock` as the username instead
+- **Password**: Your license key
+
+> **Note**: Fingerprint authentication is currently **disabled**. If fingerprint authentication is enabled in the future, you would append it to your license key separated by a colon (`:`), like: `license-key:fingerprint`
+
+**Example Authentication:**
+```
+Loading composer repositories with package information
+Authentication required (workflowstudio.composer.sh):
+Username: user@example.com
+Password: 8c21df8f-6273-4932-b4ba-8bcc723ef500
+```
+
+### Step 4: Publish Configuration and Assets
+
+Publish the configuration and assets:
+
+```bash
+php artisan vendor:publish --provider="WorkflowStudio\WorkflowStudioServiceProvider"
+```
+
+### Step 5: Run Migrations
+
+Run the database migrations:
+
+```bash
+php artisan migrate
+```
+
+### Step 6: Configure Observed Models
+
+Configure which models to observe in `config/workflowstudio.php`:
+
+```php
+'observed_models' => [
+    \App\Models\User::class,
+    \App\Models\Post::class,
+    // Add more models as needed
+],
+```
+
+### Step 7: Start Queue Worker
+
+Workflows run asynchronously, so start the queue worker:
+
+```bash
+php artisan queue:work
+```
 
 ## Creating Your First Workflow
 
