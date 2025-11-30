@@ -14,8 +14,8 @@ export default defineConfig({
   ],
   
   head: [
-    ['link', { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
-    ['link', { rel: 'apple-touch-icon', href: '/logo.svg' }],
+    ['link', { rel: 'icon', href: '/favicon.png', type: 'image/png' }],
+    ['link', { rel: 'apple-touch-icon', href: '/logo.png' }],
     ['meta', { name: 'theme-color', content: '#6366f1' }],
     // Primary SEO Meta Tags
     ['meta', { name: 'keywords', content: 'Laravel, workflow automation, visual workflow builder, drag and drop, workflow engine, automation, Laravel package, React Flow, workflow canvas' }],
@@ -45,7 +45,7 @@ export default defineConfig({
   themeConfig: {
     siteTitle: 'WorkflowStudio',
     logo: {
-      src: '/logo.svg',
+      src: '/logo.png',
       alt: 'WorkflowStudio'
     },
     
