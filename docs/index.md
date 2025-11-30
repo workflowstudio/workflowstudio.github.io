@@ -77,6 +77,10 @@ Built for Laravel with queue support, error handling, and comprehensive logging.
 #### 📊 Execution Tracking
 Monitor workflow executions in real-time. View execution history, debug failures, and track performance metrics.
 
+</div>
+
+<div class="benefit">
+
 #### 🧪 Built-in Testing
 Test workflows instantly without creating test data. The manual execution feature lets you test any workflow with custom test data right from the editor.
 
