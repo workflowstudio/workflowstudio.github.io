@@ -100,7 +100,7 @@ See WorkflowStudio in action with our intuitive drag-and-drop interface:
 
 <div class="example-section">
 
-![WorkflowStudio Visual Workflow Builder](./hero-section.png)
+![WorkflowStudio Visual Workflow Builder](./public/hero-section.png)
 
 </div>
 
