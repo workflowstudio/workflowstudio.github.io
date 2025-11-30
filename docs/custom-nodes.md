@@ -501,6 +501,5 @@ Check the built-in nodes for examples:
 
 ## Next Steps
 
-- Review [Node Types](./node-types.md)
 - Understand [Context Variables](./context-variables.md)
-- Check [API Reference](./api-reference.md)
+- Explore [Actions](./actions.md) and [Conditions](./conditions.md)

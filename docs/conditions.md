@@ -434,7 +434,6 @@ For complex logic, chain multiple conditions or create custom conditions.
 
 ## Next Steps
 
-- Learn about [Conditional Branching](./conditional-branching.md)
 - Explore [Actions](./actions.md)
 - Understand [Context Variables](./context-variables.md)
 - Create [Custom Conditions](./custom-nodes.md)

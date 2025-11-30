@@ -249,6 +249,6 @@ To debug context issues:
 
 ## Next Steps
 
-- Learn about [Conditional Branching](./conditional-branching.md)
+- Learn about [Conditions](./conditions.md) for conditional branching
 - Explore [Actions](./actions.md)
 - Create [Custom Nodes](./custom-nodes.md)

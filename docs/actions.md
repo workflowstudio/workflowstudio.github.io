@@ -591,6 +591,5 @@ class SendSlackMessageAction extends AbstractAction
 ## Next Steps
 
 - Learn about [Context Variables](./context-variables.md)
-- Explore [Conditional Branching](./conditional-branching.md)
+- Explore [Conditions](./conditions.md) for conditional branching
 - Create [Custom Actions](./custom-nodes.md)
-- Review [API Reference](./api-reference.md)
