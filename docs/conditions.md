@@ -1,5 +1,5 @@
 ---
-title: Check user role
+title: Conditions
 ---
 
 Conditions evaluate expressions and control workflow branching through TRUE/FALSE paths.

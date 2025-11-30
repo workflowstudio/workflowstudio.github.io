@@ -1,5 +1,5 @@
 ---
-title: or
+title: Triggers
 ---
 
 Triggers are the starting point of every workflow. They listen for specific events and initiate workflow execution.

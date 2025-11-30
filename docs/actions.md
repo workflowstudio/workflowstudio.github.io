@@ -1,5 +1,5 @@
 ---
-title: In second action
+title: Actions
 ---
 
 Actions perform operations, send notifications, modify data, or interact with external systems.
