@@ -101,69 +101,9 @@ Navigate to `http://your-app.test/workflowstudio/workflows` in your browser.
 
 3. Check your queue logs to see the workflow execution
 
-## Understanding the Interface
-
-### Workflows List Page
-- **Statistics Cards**: View total workflows, active, and inactive counts
-- **Search & Filters**: Find workflows by name, description, or status
-- **Workflows Table**: Professional table showing:
-  - Workflow name and description
-  - Active/Inactive toggle switch
-  - Node count
-  - Execution statistics (total, successful, failed)
-  - Success rate with colored progress bar
-  - Last execution status and time
-  - Actions (Edit and Delete buttons)
-- **Sorting**: Click column headers to sort by name or updated time
-
-### Workflow Editor Page
-
-#### Header Section
-- **Back Button**: Return to workflows list
-- **Title**: "Edit Workflow" or "Create Workflow"
-- **Save Button**: Gradient indigo button with shadow effect
-
-#### Settings Card
-- **Workflow Name**: Required field for workflow identification
-- **Status Toggle**: Professional toggle switch to activate/deactivate
-- **Description**: Optional field to describe workflow purpose
-
-#### Canvas Section
-- **Visual Editor**: Dark-themed canvas for building workflows
-- **Node Library** (Left Sidebar):
-  - Browse available triggers, conditions, and actions
-  - Drag nodes onto the canvas to use them
-- **Canvas** (Center):
-  - Drag nodes to position them
-  - Click nodes to configure settings
-  - Connect nodes to define workflow logic
-  - Pan by dragging the background
-  - Zoom with scroll wheel
-- **Settings Panel** (Right Sidebar):
-  - Appears when clicking a node
-  - Configure node-specific settings
-  - Delete nodes
-- **Execution History Panel** (Slide-out):
-  - Click "History" button (top right) to view execution history
-  - View past executions with status, duration, and timestamps
-  - "View Details" button to see full execution flow
-
-### Execution Detail Page
-- **Header**: Workflow name and execution ID with status badge
-- **Statistics Cards**: 
-  - Started At time
-  - Completed At time
-  - Duration in seconds
-  - Current status with colored indicators
-- **Error Messages**: Displayed prominently if execution failed
-- **Execution Flow**: Visual canvas showing executed nodes with:
-  - Status indicators (green for success, red for failure)
-  - Execution times and durations
-  - Node outputs and results
-
 ## Next Steps
 
-- Learn about [Node Types](./node-types.md)
+- Learn about [Triggers](./triggers.md)
+- Explore [Actions](./actions.md)
 - Understand [Context Variables](./context-variables.md)
-- Explore [Conditional Branching](./conditional-branching.md)
 - Create [Custom Nodes](./custom-nodes.md)

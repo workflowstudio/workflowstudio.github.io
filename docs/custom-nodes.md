@@ -100,15 +100,12 @@ class SendSlackMessageAction extends AbstractAction
 In your `AppServiceProvider`:
 
 ```php
-use WorkflowStudio\Registry\ActionRegistry;
+use WorkflowStudio\WorkflowStudio;
 use App\WorkflowStudio\Actions\SendSlackMessageAction;
 
 public function boot()
 {
-    ActionRegistry::register(
-        SendSlackMessageAction::type(),
-        SendSlackMessageAction::class
-    );
+    WorkflowStudio::registerAction(SendSlackMessageAction::class);
 }
 ```
 
@@ -173,15 +170,12 @@ class IsWeekendCondition extends AbstractCondition
 ### Step 2: Register the Condition
 
 ```php
-use WorkflowStudio\Registry\ConditionRegistry;
+use WorkflowStudio\WorkflowStudio;
 use App\WorkflowStudio\Conditions\IsWeekendCondition;
 
 public function boot()
 {
-    ConditionRegistry::register(
-        IsWeekendCondition::type(),
-        IsWeekendCondition::class
-    );
+    WorkflowStudio::registerCondition(IsWeekendCondition::class);
 }
 ```
 
@@ -306,15 +300,12 @@ protected function schedule(Schedule $schedule)
 ### Step 4: Register the Trigger
 
 ```php
-use WorkflowStudio\Registry\TriggerRegistry;
+use WorkflowStudio\WorkflowStudio;
 use App\WorkflowStudio\Triggers\ScheduledTrigger;
 
 public function boot()
 {
-    TriggerRegistry::register(
-        ScheduledTrigger::type(),
-        ScheduledTrigger::class
-    );
+    WorkflowStudio::registerTrigger(ScheduledTrigger::class);
 }
 ```
 

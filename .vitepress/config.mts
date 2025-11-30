@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'WorkflowStudio',
+  title: 'WorkflowStudio - Visual Workflow Automation for Laravel',
   description: 'Build powerful, visual workflows for Laravel with an intuitive drag-and-drop canvas editor. Automate complex business processes without writing code.',
   
   base: '/',
@@ -43,6 +43,7 @@ export default defineConfig({
   ],
 
   themeConfig: {
+    siteTitle: 'WorkflowStudio',
     logo: {
       src: '/logo.svg',
       alt: 'WorkflowStudio'
@@ -56,28 +57,14 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: 'Getting Started',
+        text: 'Documentation',
         items: [
-          { text: 'Introduction', link: '/getting-started' },
-        ],
-      },
-      {
-        text: 'Core Concepts',
-        items: [
-          { text: 'Node Types', link: '/node-types' },
+          { text: 'Getting Started', link: '/getting-started' },
           { text: 'Triggers', link: '/triggers' },
-          { text: 'Conditions', link: '/conditions' },
           { text: 'Actions', link: '/actions' },
+          { text: 'Conditions', link: '/conditions' },
           { text: 'Context Variables', link: '/context-variables' },
-          { text: 'Conditional Branching', link: '/conditional-branching' },
-        ],
-      },
-      {
-        text: 'Advanced',
-        items: [
-          { text: 'Creating Custom Nodes', link: '/custom-nodes' },
-          { text: 'API Reference', link: '/api-reference' },
-          { text: 'Authorization', link: '/authorization' },
+          { text: 'Custom Nodes', link: '/custom-nodes' },
         ],
       },
     ],
